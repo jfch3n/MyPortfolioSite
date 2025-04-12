@@ -1,0 +1,64 @@
+#root {
+  /* max-width: 1280px; */
+  margin: 0;
+  /* padding: 2rem; */
+  text-align: center;
+  width: 100vw
+}
+
+.headings {
+  font-size: 48px
+}
+
+.text_info {
+  font-size: 1.5rem
+}
+
+/* animations */
+.fade {
+  animation: fadeIn 1s ease-in-out
+}
+
+
+@keyframes fadeIn {
+  0%  {
+    opacity: 0;
+  }
+
+  25% {
+    opacity: 0.25
+  }
+
+  50% {
+    opacity: 0.5
+  }
+
+  75% {
+    opacity: 0.75
+  }
+
+  100% {
+    opacity: 1
+  }
+}
+
+
+/* media queries for text on web page */
+@media screen and (max-width: 768px){
+    .headings {
+      font-size: 32px
+    }
+    .text_info {
+      font-size: 12.5px
+    }
+}
+
+@media screen and (min-width: 769px) and (max-width: 1440px) {
+  .headings {
+    font-size: 36px
+  }
+  .text_info {
+    font-size: 22px
+  }
+}
+

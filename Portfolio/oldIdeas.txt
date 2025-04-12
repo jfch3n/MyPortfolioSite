@@ -1,0 +1,558 @@
+import Link from "./Link.jsx";
+import useMediaQuery from "./useMediaQuery.jsx";
+import useHover from "./useHover.jsx";
+import { useEffect, useRef, useState } from "react";
+
+function NavBar({ hrefs, ref, HandleClick }) {
+  // hover effect for hamburger menu
+  const [hover, setHoverEffect, removeHoverEffect] = useHover();
+  const [isVisible, setIsVisible] = useState(false);
+  const visibilityRef = useRef(isVisible);
+  const menuRef = useRef(null);
+
+  // styles
+  const parent = {
+    display: "flex",
+    width: "100%",
+    justifyContent: "end",
+    alignItems: "stretch",
+    backgroundColor: "white",
+  };
+
+  const links = {
+    marginLeft: "15px",
+    fontSize: "20px",
+    padding: "40px 5px 0px 30px",
+  };
+
+  const hamburgerMenu = {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "end",
+    justifyContent: "end",
+    margin: "20px 40px 20.105px 0px",
+    border: "solid black",
+    borderRadius: "5px",
+    padding: "0px 5px",
+    position: "relative",
+  };
+
+  const hamburgerMenuHover = {
+    ...hamburgerMenu,
+    backgroundColor: "blue",
+    cursor: "pointer",
+    userSelect: "none",
+  };
+
+  const line = {
+    color: "black",
+    padding: "0px",
+  };
+
+  const topLine = {
+    ...line,
+    marginBottom: "-33.97px",
+    marginTop: "-14.97px",
+    paddingTop: "2px",
+  };
+
+  const bottomLine = {
+    ...line,
+    marginTop: "-33.97px",
+    marginBottom: "2px",
+    paddingBottom: "2px",
+  };
+
+  let options = {
+    display: isVisible ? "flex" : "none",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    border: "solid black",
+    position: "absolute",
+    top: "40px",
+    listStyle: "none",
+    backgroundColor: "red",
+    borderRadius: "5px",
+    padding: "5px 10px 15px 10px",
+  };
+
+  // onClick to pop up menu
+  const toggleMenu = () => {
+    setIsVisible((prev) => !prev);
+  };
+
+  // remove visibility when clicking anywhere outside of the menu
+  useEffect(() => {
+    const menuChildren = menuRef.current ? [...menuRef.current.children] : null;
+
+    const removeVisibility = (e) => {
+      console.log("activate");
+      console.log("isVisible from UseEffect: ", isVisible);
+      console.log(e.target);
+      if (
+        menuRef &&
+        e.target !== menuRef.current &&
+        !menuChildren.includes(e.target)
+      ) {
+        if (isVisible) {
+          console.log("HERE");
+          toggleMenu();
+        }
+      }
+    };
+
+    window.addEventListener("click", removeVisibility);
+
+    return () => {
+      window.removeEventListener("click", removeVisibility);
+    };
+  }, [isVisible]);
+
+  // media queries
+  const mediaQuery = useMediaQuery();
+
+  useEffect(() => {
+    if (mediaQuery.isTablet || mediaQuery.isDesktop) {
+      setIsVisible(false);
+    }
+  }, [mediaQuery.size]);
+
+  return (
+    <nav style={parent} ref={ref}>
+      {mediaQuery.isTablet || mediaQuery.isDesktop ? (
+        <>
+          <Link
+            Anchor={hrefs.projects}
+            HandleClick={HandleClick}
+            Sty={links}
+            Text="Projects"
+          />
+          <Link
+            Anchor={hrefs.aboutMe}
+            HandleClick={HandleClick}
+            Sty={links}
+            Text="About me"
+          />
+          <Link
+            Anchor={hrefs.contact}
+            HandleClick={HandleClick}
+            Sty={links}
+            Text="Contact Information"
+          />
+        </>
+      ) : (
+        <>
+          <div
+            style={hover ? hamburgerMenuHover : hamburgerMenu}
+            ref={menuRef}
+            onClick={toggleMenu}
+            onMouseEnter={setHoverEffect}
+            onMouseLeave={removeHoverEffect}
+          >
+            <p style={topLine}>___</p>
+            <p style={line}>___</p>
+            <p style={bottomLine}>___</p>
+          </div>
+          <menu style={options}>
+            <li>
+              <Link
+                Anchor={hrefs.projects}
+                HandleClick={HandleClick}
+                Sty={null}
+                Text="Projects"
+              />
+            </li>
+            <li>
+              <Link
+                Anchor={hrefs.aboutMe}
+                HandleClick={HandleClick}
+                Sty={null}
+                Text={"About me"}
+              />
+            </li>
+            <li>
+              <Link
+                Anchor={hrefs.contact}
+                HandleClick={HandleClick}
+                Sty={null}
+                Text={"Contact Information"}
+              />
+            </li>
+          </menu>
+        </>
+      )}
+    </nav>
+  );
+}
+
+export default NavBar;
+
+
+The above I believe will cause performance issues as isVisible changes way too often on click. Additionally, I add  two eventlistener to the hamburger menu element which is inefficient
+
+
+import Link from "./Link.jsx";
+import useMediaQuery from "./useMediaQuery.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faGithub,
+  faGoogle,
+  faInstagram,
+} from "@fortawesome/free-brands-svg-icons";
+import { useRef, useState, useEffect } from "react";
+
+function Contact({ hrefs, ref }) {
+  // used to click pop up
+  const [popUp, setPopup] = useState(false);
+
+  // ref to hook onto email popup in DOM
+  const popUpRef = useRef(null);
+
+  // open email popup when click google link
+  const openEmail = (e) => {
+    setPopup(true);
+  };
+
+  const closeEmail = (e) => {
+    if (
+      e.target !== popUpRef.current &&
+      e.target.className !== "emailText" &&
+      e.target.className !== "googlePopup" &&
+      e.target.getAttribute("d") !==
+        "M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" &&
+      e.currentTarget.className !== "googlePopup" &&
+      !JSON.stringify(e.target.classList).includes("googlePopup")
+    ) {
+      setPopup(false);
+    }
+  };
+
+  // close email when clicking on anything that is not the pop screen
+  useEffect(() => {
+    window.addEventListener("click", closeEmail);
+
+    return () => {
+      window.removeEventListener("click", closeEmail);
+    };
+  }, []);
+
+  // media queries
+  const mediaQuery = useMediaQuery();
+
+  //styles
+  const parent = {
+    width: "100vw",
+    height: "100vh",
+    minWidth: "320px",
+    minHeight: "600px",
+    backgroundColor: "#274472",
+    position: "relative",
+    overflow: "hidden",
+  };
+
+  const contactHeading = {
+    textAlign: "start",
+    marginTop: "0px",
+    marginLeft: "14px",
+    paddingTop: "55px",
+    color: "#D4F1F4",
+  };
+
+  const info = {
+    textAlign: "start",
+    lineHeight: "4.5",
+    marginLeft: "14px",
+    color: "#D4F1F4",
+  };
+
+  let iconSize = null; // control size of icon
+  let leftPosition = null; // control position of socials bar
+  let topPosition = null; // control position of socials bar
+
+  // console.log("width: ", mediaQuery.size.width, window.innerWidth);
+
+  if (mediaQuery.size.width <= 320) {
+    iconSize = "40px";
+    leftPosition = "13vw";
+    topPosition = "380px";
+  } else if (mediaQuery.size.width <= 425) {
+    console.log("here", mediaQuery.size.width);
+    iconSize = "40px";
+    leftPosition = "18vw";
+    topPosition = "380px";
+  } else if (mediaQuery.size.width <= 520) {
+    iconSize = "50px";
+    leftPosition = "18vw";
+    topPosition = "381px";
+  } else if (mediaQuery.size.width <= 768) {
+    iconSize = "50px";
+    leftPosition = "26.5vw";
+    topPosition = "381px";
+  } else if (mediaQuery.size.width <= 1024) {
+    iconSize = "50px";
+    leftPosition = "30vw";
+    topPosition = "400px";
+  } else {
+    iconSize = "60px";
+    leftPosition = "35vw";
+    topPosition = "400px";
+  }
+
+  const socials = {
+    position: "absolute",
+    top: topPosition,
+    left: leftPosition,
+    padding: "15px 30px",
+    display: "flex",
+    alignItems: "center",
+  };
+  const icon = {
+    paddingTop: "0px",
+    paddingRight: "30px",
+    fontSize: iconSize,
+    cursor: "pointer",
+    color: "#D4F1F4",
+  };
+
+  const email = {
+    display: popUp ? "block" : "none",
+    border: "thick double #05445E",
+    borderRadius: "15px",
+    position: "absolute",
+    padding: "75px",
+    left: leftPosition,
+    color: "black",
+    backgroundColor: "rgb(195, 224, 229)",
+    fontSize: "16px",
+  };
+
+  return (
+    <div id={hrefs.contact.slice(1)} ref={ref} style={parent}>
+      <h1 className="headings" style={contactHeading}>
+        Contact Me
+      </h1>
+      <p className="text_info" style={info}>
+        Please feel free to reach out whether if you have a question, discuss a
+        project, or want to collaborate! Looking forward to hear from you!
+      </p>
+      <div style={socials}>
+        <Link
+          Cln="googlePopup"
+          Col="#31AA52"
+          HandleClick={openEmail}
+          Icon={
+            <FontAwesomeIcon
+              onClick={openEmail}
+              icon={faGoogle}
+              className="googlePopup"
+            />
+          }
+          Sty={icon}
+        />
+        <Link
+          Anchor="https://www.instagram.com/jfchen_13/"
+          Col="#5D52CA"
+          Icon={<FontAwesomeIcon icon={faInstagram} />}
+          NewTab={true}
+          Sty={icon}
+        />
+        <Link
+          Anchor="https://github.com/jfch3n"
+          Col="#161313"
+          Icon={<FontAwesomeIcon icon={faGithub} />}
+          NewTab={true}
+          Sty={icon}
+        />
+      </div>
+      <div style={email} ref={popUpRef}>
+        <p>X</p>
+        <h3 className="emailText">Email: jfchen13@gmail.com </h3>
+      </div>
+    </div>
+  );
+}
+
+export default Contact;
+
+
+
+import React from "react";
+import { useEffect, useRef, useState } from "react";
+
+function useLazyLoad(route, prop1, ref) {
+  const components = useRef(route); // have components initialize to all component's paths of the webpage
+  const [observer, setObserver] = useState(null); // initialize an observer
+  const observerIsActive = useRef(true); // flag to make sure observer is not active when link is clicked
+  const [currComponents, setCurrComponents] = useState([]); // tracks all current components rendered on webpage
+  const [scroll, setScroll] = useState(false); // scroll function when a link is clicked
+
+  // helper function when called imports the path to a compoenent and then calls the component
+  const importComponents = async (path, prop1, ref, urlRef, clickEl = null) => {
+    const componentToImport = await import(path);
+    let importHappened = false;
+    let currComp = null;
+
+    if (componentToImport) {
+      // indicate that an import was made
+      importHappened = true;
+
+      // call the component
+      currComp = (
+        <componentToImport.default
+          hrefs={prop1}
+          HandleClick={clickEl}
+          key={componentToImport.default.name}
+          ref={ref}
+          urlRef={urlRef}
+        />
+      );
+
+      // remove the component from the stack
+      const newRoute = components.current.slice(
+        0,
+        components.current.length - 1
+      );
+
+      // update the component to reflect change
+      components.current = newRoute;
+
+      // track current component
+      setCurrComponents((prev) => [...prev, currComp]);
+    }
+
+    return [importHappened, currComp];
+  };
+
+  // helper function that checks to see if a nested array has an element
+  const checkSubArrays = (arrWithNesteds, element) => {
+    return arrWithNesteds.some((subArr) => {
+      return Array.isArray(subArr) && subArr.includes(element); // nested array is an array and has the target element
+    });
+  };
+
+  // helper function that returns the index of the nested array taht contains the targeted element
+  const findTargetElementIndex = (arrWithNesteds, element) => {
+    // loop through each nested array to see if targeted element is there
+    for (let i = 0; i < arrWithNesteds.length; i++) {
+      for (let j = 0; j < arrWithNesteds[i].length; j++) {
+        if (arrWithNesteds[i][j] == element) {
+          // return index
+          return arrWithNesteds.indexOf(arrWithNesteds[i]);
+        }
+      }
+    }
+
+    // return -1 if an element is not there
+    return -1;
+  };
+
+  // call components not already on page when clicking a link
+  const callFunctionNotOnPage = async (e) => {
+    observerIsActive.current = false;
+
+    let counter = 0;
+
+    // create a copy of the current path array to get the position of the component in the array
+    const copy = [...components.current];
+
+    // the component that was clicked
+    const clickedComponent = `./${e.target.hash.slice(1)}.jsx`;
+
+    // get index of component
+    const componentLength = findTargetElementIndex(
+      copy.reverse(),
+      clickedComponent
+    );
+
+    // only run if route is in the stack
+    if (checkSubArrays(components.current, clickedComponent)) {
+      while (counter <= componentLength) {
+        const [importHappened, componentToLoad] = await importComponents(
+          components.current[components.current.length - 1][0],
+          prop1,
+          ref,
+          components.current[components.current.length - 1][1]
+        );
+
+        // if the import was succesful
+        if (importHappened) {
+          // set scroll to true so that when link is clicked it scrolls to the correct section
+          setScroll(true);
+          // increase counter
+          counter++;
+        } else {
+          break;
+        }
+      }
+    }
+
+    // console.log("OIA from function: ", observerIsActive.current);
+
+    observerIsActive.current = true;
+  };
+
+  // set up Observer Intersection API
+  useEffect(() => {
+    // if nothing is currently being observed
+    if (!observer) {
+      const IO = new IntersectionObserver(
+        (entries) => {
+          // loop through each entry value
+          entries.forEach(async (entry) => {
+            if (entry.isIntersecting && observerIsActive.current) {
+              // only import if there is anything left in the stack
+              if (components.current.length > 0) {
+                // import component
+                await importComponents(
+                  components.current[components.current.length - 1][0],
+                  prop1,
+                  ref,
+                  components.current[components.current.length - 1][1],
+                  callFunctionNotOnPage
+                );
+              }
+            }
+          });
+        },
+        { root: null, rootMargin: "0px", threshold: 0.5 }
+      );
+
+      // have observer keep track of currently called component
+      setObserver(IO);
+    }
+
+    // observe if and only if there is an observer and elementRef.current is attached to a DOM element
+    if (observer && ref.current) {
+      observer.observe(ref.current);
+    }
+
+    // clean up if there exists an observer
+    return () => {
+      if (observer) {
+        observer.disconnect();
+      }
+    };
+  }, [observer, components.current]);
+
+  // scroll to area of webpage dictated by linked clicked in the NavBar
+  useEffect(() => {
+    if (scroll) {
+      ref.current.scrollIntoView();
+      setScroll(false);
+    }
+  }, [scroll]);
+
+  // return a loading screen if no current component
+  if (currComponents.length === 0) {
+    return <div ref={ref}>Loading...</div>;
+  }
+
+  const showAllElements = currComponents.map((portion) => {
+    return portion;
+  });
+
+  return showAllElements;
+}
+
+export default useLazyLoad;
