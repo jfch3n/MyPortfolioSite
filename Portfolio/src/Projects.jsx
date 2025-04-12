@@ -182,7 +182,7 @@ function Projects({ hrefs, ref, urlRef }) {
         <Project
           description="My portfolio's source code"
           icon={<FontAwesomeIcon icon={faFileCode} />}
-          href=""
+          href="https://github.com/jfch3n/MyPortfolioSite/tree/main/Portfolio/src"
           logoSty={projectIcon}
           titleSty={projectTitle}
           descSty={projectDescription}
