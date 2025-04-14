@@ -1,7 +1,7 @@
 import BackToTop from "./BackToTop.jsx";
 import useURLChange from "./useURLChange.jsx";
 import useLazyLoad from "./useLazyLoad.jsx";
-import { useState, useEffect, useRef } from "react";
+import { useRef } from "react";
 
 function Portfolio({ hrefs }) {
   // refs used to keep track of what url should be displayed
@@ -37,18 +37,13 @@ function Portfolio({ hrefs }) {
     position: "fixed",
     bottom: "0px",
     left: "0vw",
-    color: "black",
+    color: "whitesmoke",
     textDecoration: "underline",
   };
 
   const footer = {
     position: "relative",
   };
-
-  // useEffect(() => {
-  //   // console.log(urlCurrentComp);
-  //   // console.log(window.innerWidth, window.innerHeight);
-  // });
 
   return (
     <>

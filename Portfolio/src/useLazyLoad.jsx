@@ -173,7 +173,7 @@ function useLazyLoad(route, prop1, ref, arrRefs) {
   // scroll to area of webpage dictated by linked clicked in the NavBar initially when component is not rendered
   useEffect(() => {
     if (scroll) {
-      ref.current.scrollIntoView({ behavior: "smooth" });
+      ref.current.scrollIntoView();
       setScroll(false);
     }
   }, [scroll]);

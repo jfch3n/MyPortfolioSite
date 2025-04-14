@@ -152,7 +152,7 @@ function Projects({ hrefs, ref, urlRef }) {
       </h1>
       <div style={parent}>
         <Project
-          description="A to do list to keep track what needs to be done"
+          description="A to do list to keep track of what needs to be done"
           icon={<FontAwesomeIcon icon={faListCheck} />}
           logoSty={projectIcon}
           titleSty={projectTitle}

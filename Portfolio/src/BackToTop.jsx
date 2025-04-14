@@ -14,7 +14,7 @@ function BackToTop({ sty, urlRef }) {
   return (
     <Link
       Anchor="#NavBar"
-      Col={"whitesmoke"}
+      Col={"#FFBF00"}
       Text={"Back to Top"}
       Sty={sty}
       urlRef={urlRef}
